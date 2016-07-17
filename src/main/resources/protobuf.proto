@@ -1,0 +1,26 @@
+syntax = "proto3";
+option optimize_for = CODE_SIZE;
+option go_package = "natsproxy";
+
+
+message Values{
+	repeated string arr =1;
+}
+
+
+message Request {
+  string URL = 1;
+  string Method = 2;
+  string RemoteAddr = 3;
+  bytes Body = 4;
+  map<string,Values> Form = 5;
+  map<string,Values>  Header = 6;
+  string WebSocketID = 7;
+}
+
+message Response {
+  int32 StatusCode = 1;
+  map<string,Values> Header = 2;
+  bytes Body = 3;
+  bool DoUpgrade = 4;
+}
