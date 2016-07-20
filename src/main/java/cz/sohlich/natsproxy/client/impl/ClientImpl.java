@@ -7,6 +7,8 @@ import io.nats.client.Connection;
 import io.nats.client.ConnectionFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -20,10 +22,12 @@ public class ClientImpl implements Client {
     public static final String METHOD_DELETE = "DELETE";
 
 
+    private final List<NatsHandler> filters;
     private final Connection connection;
 
     public ClientImpl(ConnectionFactory factory) throws IOException, TimeoutException {
         connection = factory.createConnection();
+        filters = new ArrayList<>();
     }
 
 

@@ -31,17 +31,19 @@ public interface Context {
 
     void setParams(Map<String, Integer> params);
 
-    void Abort();
+    void abort();
 
-    void AbortWithJson(Object object) throws JsonProcessingException;
+    void abortWithJson(Object object) throws JsonProcessingException;
 
-    void BindJSON(Object object);
+    void bindJSON(Object object);
 
-    String FormVariable(String name);
+    String formVariable(String name);
 
-    boolean IsAborted();
+    boolean isAborted();
 
     void JSON(int statusCode, Object object) throws JsonProcessingException;
 
-    String PathVariable(String name);
+    String pathVariable(String name);
+
+    void parseForm();
 }

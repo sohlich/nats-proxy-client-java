@@ -2,9 +2,14 @@ package cz.sohlich.natsproxy.core.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.sohlich.natsproxy.client.exception.ClientException;
 import cz.sohlich.natsproxy.core.HttpStatus;
+import cz.sohlich.natsproxy.proto.Protobuf;
+import cz.sohlich.natsproxy.util.ContextUtils;
 import org.omg.CORBA.Object;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.util.Map;
 
 /**
@@ -21,6 +26,7 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
     private int index;
     private int abortIndex;
     private Map<String, Integer> params;
+    private Map<String, String> form;
 
     public ContextImpl(String url, Response response, Request request) {
         this.url = url;
@@ -80,28 +86,29 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
 
 
     @Override
-    public void Abort() {
+    public void abort() {
         this.abortIndex = index;
     }
 
     @Override
-    public void AbortWithJson(Object object) throws JsonProcessingException {
-        Abort();
+    public void abortWithJson(Object object) throws JsonProcessingException {
+        abort();
         JSON(HttpStatus.SERVER_ERROR, object);
     }
 
     @Override
-    public void BindJSON(Object object) {
+    public void bindJSON(Object object) {
 
     }
 
+
     @Override
-    public String FormVariable(String name) {
+    public String formVariable(String name) {
         return null;
     }
 
     @Override
-    public boolean IsAborted() {
+    public boolean isAborted() {
         return abortIndex <= index;
     }
 
@@ -112,8 +119,24 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
     }
 
     @Override
-    public String PathVariable(String name) {
+    public String pathVariable(String name) {
         return null;
+    }
+
+    @Override
+    public void parseForm() {
+        Protobuf.Values vals = request.getHeader().get("Content-Type");
+        String header = null;
+        if (vals != null) {
+            if (vals.getArrList().size() > 0) {
+                header = vals.getArrList().get(0);
+            }
+        }
+        try {
+            form = ContextUtils.parseForm(request, header);
+        } catch (MalformedURLException | UnsupportedEncodingException ex) {
+            throw new ClientException(ex);
+        }
     }
 
 
@@ -121,4 +144,6 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
         byte[] body = new ObjectMapper().writeValueAsBytes(o);
         return body;
     }
+
+
 }
