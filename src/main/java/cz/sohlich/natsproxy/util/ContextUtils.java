@@ -8,6 +8,7 @@ import org.apache.http.entity.ContentType;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -69,5 +70,19 @@ public class ContextUtils {
             }
         }
         return query_pairs;
+    }
+
+
+    public static Map<String, Integer> buildParamsMap(String URL) {
+        Map<String, Integer> paramMap = new HashMap<>();
+        String[] params = URL.split("/");
+        int index = 0;
+        for (String param : params) {
+            if (param.length() > 1 && param.charAt(0) == ':') {
+                paramMap.put(param.substring(1), index);
+            }
+            index++;
+        }
+        return paramMap;
     }
 }

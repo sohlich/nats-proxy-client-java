@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.sohlich.natsproxy.client.exception.ClientException;
 import cz.sohlich.natsproxy.core.HttpStatus;
-import cz.sohlich.natsproxy.proto.Protobuf;
 import cz.sohlich.natsproxy.util.ContextUtils;
-import org.omg.CORBA.Object;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -20,7 +20,6 @@ import java.util.Map;
  */
 public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
 
-    private final String url;
     private Request request;
     private Response response;
     private int index;
@@ -28,8 +27,8 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
     private Map<String, Integer> params;
     private Map<String, String> form;
 
-    public ContextImpl(String url, Response response, Request request) {
-        this.url = url;
+    public ContextImpl(Map<String, Integer> params, Response response, Request request) {
+        this.params = params;
         this.response = response;
         this.request = request;
     }
@@ -39,49 +38,10 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
         return request;
     }
 
-    @Override
-    public void setRequest(Request request) {
-        this.request = request;
-    }
 
     @Override
     public Response getResponse() {
         return response;
-    }
-
-    @Override
-    public void setResponse(Response response) {
-        this.response = response;
-    }
-
-    @Override
-    public int getIndex() {
-        return index;
-    }
-
-    @Override
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    @Override
-    public int getAbortIndex() {
-        return abortIndex;
-    }
-
-    @Override
-    public void setAbortIndex(int abortIndex) {
-        this.abortIndex = abortIndex;
-    }
-
-    @Override
-    public Map<String, Integer> getParams() {
-        return params;
-    }
-
-    @Override
-    public void setParams(Map<String, Integer> params) {
-        this.params = params;
     }
 
 
@@ -97,13 +57,21 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
     }
 
     @Override
-    public void bindJSON(Object object) {
-
+    public Object bindJSON(Class clazz) {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.readValue(request.getData(), clazz);
+        } catch (IOException e) {
+            throw new ClientException(e);
+        }
     }
 
 
     @Override
     public String formVariable(String name) {
+        if (form != null) {
+            return form.get(name);
+        }
         return null;
     }
 
@@ -120,20 +88,37 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
 
     @Override
     public String pathVariable(String name) {
-        return null;
+        String requestURL = request.getURL();
+        if (requestURL == null || requestURL.isEmpty()) {
+            return "";
+        }
+
+        String URL = requestURL.replaceAll("[?]{1}.*", "");
+        URL = URL.replaceAll("^[a-z]{4}:/{2}[a-z]{0,3}\\.?[a-z,0-9,\\.]{1,}\\.?[a-z]{0,}:?[0-9]{0,4}", "");
+        String[] urlParts = URL.split("/");
+        Integer index = params.get(name);
+        if (index != null && urlParts.length > index) {
+            return urlParts[index];
+        }
+        return "";
     }
 
     @Override
     public void parseForm() {
-        Protobuf.Values vals = request.getHeader().get("Content-Type");
-        String header = null;
-        if (vals != null) {
-            if (vals.getArrList().size() > 0) {
-                header = vals.getArrList().get(0);
-            }
-        }
+        String header = ContextUtils.parseMimeType(request.getHeader());
         try {
-            form = ContextUtils.parseForm(request, header);
+            String method = request.getMethod();
+            String query = new URL(request.getURL()).getQuery();
+            Map<String, String> queryValues = ContextUtils.splitQuery(query);
+
+            Map<String, String> formValues = null;
+            if ("POST".equals(method) || "PUT".equals(method) || "PATCH".equals(method)) {
+                formValues = ContextUtils.parseForm(request, header);
+                // If form contains same param as query,
+                // the form value will be used.
+                queryValues.putAll(formValues);
+            }
+            form = queryValues;
         } catch (MalformedURLException | UnsupportedEncodingException ex) {
             throw new ClientException(ex);
         }

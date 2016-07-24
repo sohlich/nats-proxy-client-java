@@ -8,10 +8,12 @@ import cz.sohlich.natsproxy.core.NatsHandler;
 import cz.sohlich.natsproxy.core.impl.ContextImpl;
 import cz.sohlich.natsproxy.core.impl.Request;
 import cz.sohlich.natsproxy.core.impl.Response;
+import cz.sohlich.natsproxy.util.ContextUtils;
 import io.nats.client.Message;
 import io.nats.client.MessageHandler;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by Radomir Sohlich on 7/16/16.
@@ -21,11 +23,13 @@ public class NatsProxyMessageHandler implements MessageHandler {
     private final NatsHandler handler;
     private final String url;
     private final Client client;
+    private final Map<String, Integer> pathParamMap;
 
     public NatsProxyMessageHandler(Client client, NatsHandler handler, String url) {
         this.handler = handler;
         this.url = url;
         this.client = client;
+        this.pathParamMap = ContextUtils.buildParamsMap(url);
     }
 
     public void onMessage(Message message) {
@@ -38,7 +42,7 @@ public class NatsProxyMessageHandler implements MessageHandler {
 
         Response response = new Response();
 
-        Context context = new ContextImpl(url, response, request);
+        Context context = new ContextImpl(pathParamMap, response, request);
 
         handler.Handle(context);
 

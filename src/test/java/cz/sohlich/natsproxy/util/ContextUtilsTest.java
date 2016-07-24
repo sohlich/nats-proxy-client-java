@@ -16,6 +16,12 @@ import java.util.Map;
  */
 public class ContextUtilsTest {
 
+    @Test
+    public void buildParamMapTest() {
+        String url = "/bla/bla/:param1/:param2";
+        Map<String, Integer> resultMap = ContextUtils.buildParamsMap(url);
+        Assert.assertEquals(new Integer(3), resultMap.get("param1"));
+    }
 
     @Test
     public void mimeTest() {

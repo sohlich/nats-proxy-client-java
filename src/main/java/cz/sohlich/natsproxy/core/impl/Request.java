@@ -21,6 +21,10 @@ public class Request {
         this.request = request;
     }
 
+    public String getMethod() {
+        return request.getMethod();
+    }
+
     public void unmarshallFrom(byte[] data) throws InvalidProtocolBufferException {
         request = Protobuf.Request.parseFrom(data);
     }
@@ -34,5 +38,8 @@ public class Request {
         return request.getHeader();
     }
 
+    public String getURL() {
+        return request.getURL();
+    }
 
 }
