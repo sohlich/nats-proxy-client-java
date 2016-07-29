@@ -36,7 +36,6 @@ public class ContextImplTest {
         String formVariable = context.formVariable("post");
         Assert.assertEquals("postval", formVariable);
 
-
         String pathVariable = context.pathVariable("id1");
         Assert.assertEquals("12324", pathVariable);
 

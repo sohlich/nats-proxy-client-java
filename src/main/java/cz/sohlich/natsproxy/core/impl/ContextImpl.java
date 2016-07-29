@@ -22,8 +22,8 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
 
     private Request request;
     private Response response;
-    private int index;
-    private int abortIndex;
+    private int index = -1;
+    private int abortIndex = 0;
     private Map<String, Integer> params;
     private Map<String, String> form;
 
@@ -82,7 +82,7 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
 
     @Override
     public void JSON(int statusCode, Object object) throws JsonProcessingException {
-        response.setStatusCode(HttpStatus.SERVER_ERROR);
+        response.setStatusCode(statusCode);
         response.setBody(objectToBody(object));
     }
 

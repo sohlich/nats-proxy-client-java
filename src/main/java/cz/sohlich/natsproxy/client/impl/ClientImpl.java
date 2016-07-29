@@ -4,7 +4,6 @@ import cz.sohlich.natsproxy.client.Client;
 import cz.sohlich.natsproxy.core.NatsHandler;
 import cz.sohlich.natsproxy.util.UrlUtils;
 import io.nats.client.Connection;
-import io.nats.client.ConnectionFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,8 +24,9 @@ public class ClientImpl implements Client {
     private final List<NatsHandler> filters;
     private final Connection connection;
 
-    public ClientImpl(ConnectionFactory factory) throws IOException, TimeoutException {
-        connection = factory.createConnection();
+    public ClientImpl(Connection connection)
+            throws IOException, TimeoutException {
+        this.connection = connection;
         filters = new ArrayList<>();
     }
 
@@ -49,7 +49,8 @@ public class ClientImpl implements Client {
 
     public void subscribe(String method, String natsUrl, NatsHandler handler) {
         String subUrl = UrlUtils.subscribeURLToNats(method, natsUrl);
-        connection.subscribe(subUrl, new NatsProxyMessageHandler(this, handler, natsUrl));
+        connection.subscribe(subUrl, new NatsProxyMessageHandler(this, filters,
+                handler, natsUrl));
     }
 
     public Connection getConnection() {

@@ -13,6 +13,7 @@ import io.nats.client.Message;
 import io.nats.client.MessageHandler;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,11 +25,14 @@ public class NatsProxyMessageHandler implements MessageHandler {
     private final String url;
     private final Client client;
     private final Map<String, Integer> pathParamMap;
+    private final List<NatsHandler> filters;
 
-    public NatsProxyMessageHandler(Client client, NatsHandler handler, String url) {
+    public NatsProxyMessageHandler(Client client, List<NatsHandler> filters,
+                                   NatsHandler handler, String url) {
         this.handler = handler;
         this.url = url;
         this.client = client;
+        this.filters = filters;
         this.pathParamMap = ContextUtils.buildParamsMap(url);
     }
 
@@ -40,14 +44,25 @@ public class NatsProxyMessageHandler implements MessageHandler {
             throw new ClientException("Cannot parse data", ex);
         }
 
-        Response response = new Response();
+        Response response
+                = new Response();
 
-        Context context = new ContextImpl(pathParamMap, response, request);
+        Context context
+                = new ContextImpl(pathParamMap, response, request);
 
-        handler.Handle(context);
+
+        //Apply all filters
+        for (NatsHandler filter : filters) {
+            filter.Handle(context);
+        }
+
+        if (!context.isAborted()) {
+            handler.Handle(context);
+        }
 
         try {
-            client.getConnection().publish(message.getReplyTo(), response.marshall());
+            client.getConnection().publish(message.getReplyTo(),
+                    response.marshall());
         } catch (IOException e) {
             throw new ClientException(e);
         }
