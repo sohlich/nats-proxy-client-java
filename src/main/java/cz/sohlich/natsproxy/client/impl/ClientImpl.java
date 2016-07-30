@@ -1,8 +1,8 @@
 package cz.sohlich.natsproxy.client.impl;
 
+import cz.sohlich.natsproxy.NatsUtils;
 import cz.sohlich.natsproxy.client.Client;
-import cz.sohlich.natsproxy.core.NatsHandler;
-import cz.sohlich.natsproxy.util.UrlUtils;
+import cz.sohlich.natsproxy.common.NatsHandler;
 import io.nats.client.Connection;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class ClientImpl implements Client {
     }
 
     public void subscribe(String method, String natsUrl, NatsHandler handler) {
-        String subUrl = UrlUtils.subscribeURLToNats(method, natsUrl);
+        String subUrl = NatsUtils.subscribeURLToNats(method, natsUrl);
         connection.subscribe(subUrl, new NatsProxyMessageHandler(this, filters,
                 handler, natsUrl));
     }

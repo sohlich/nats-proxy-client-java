@@ -1,8 +1,8 @@
-package cz.sohlich.natsproxy.core.impl;
+package cz.sohlich.natsproxy.common.impl;
 
-import cz.sohlich.natsproxy.core.Context;
+import cz.sohlich.natsproxy.NatsUtils;
+import cz.sohlich.natsproxy.common.Context;
 import cz.sohlich.natsproxy.proto.Protobuf;
-import cz.sohlich.natsproxy.util.ContextUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class ContextImplTest {
         Protobuf.Request r = Protobuf.Request.parseFrom(requestData);
         Request request = new Request(r);
 
-        Map<String, Integer> paramMap = ContextUtils.buildParamsMap("/test/:id1/:id2");
+        Map<String, Integer> paramMap = NatsUtils.buildParamsMap("/test/:id1/:id2");
         Context context = new ContextImpl(paramMap, new Response(), request);
         context.parseForm();
 

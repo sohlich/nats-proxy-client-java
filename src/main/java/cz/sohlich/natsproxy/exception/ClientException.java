@@ -1,4 +1,4 @@
-package cz.sohlich.natsproxy.client.exception;
+package cz.sohlich.natsproxy.exception;
 
 /**
  * Created by Radomir Sohlich on 7/16/16.

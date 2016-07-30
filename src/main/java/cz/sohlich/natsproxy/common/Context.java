@@ -1,8 +1,8 @@
-package cz.sohlich.natsproxy.core;
+package cz.sohlich.natsproxy.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import cz.sohlich.natsproxy.core.impl.Request;
-import cz.sohlich.natsproxy.core.impl.Response;
+import cz.sohlich.natsproxy.common.impl.Request;
+import cz.sohlich.natsproxy.common.impl.Response;
 
 /**
  * Created by Radomir Sohlich on 7/17/16.

@@ -6,6 +6,7 @@ import cz.sohlich.natsproxy.proto.Protobuf;
 import io.nats.client.Connection;
 import io.nats.client.ConnectionFactory;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,16 +32,12 @@ public class ClientImplTest {
         Connection conn = cf.createConnection();
         ClientImpl client = new ClientImpl(conn);
 
-
         client.get("/test", c -> {
             byte[] data = c.getRequest().getData();
             Assert.assertTrue(data != null);
             Assert.assertTrue(data.length > 0);
-            if (data != null) {
-                System.out.println("Got:" + new String(data, StandardCharsets.UTF_8));
-            }
+            System.out.println("Got:" + new String(data, StandardCharsets.UTF_8));
         });
-
 
         Connection testConnection = cf.createConnection();
 
@@ -63,6 +60,7 @@ public class ClientImplTest {
 
 
     @Test
+    @Ignore
     public void integrationTest() throws IOException, TimeoutException, InterruptedException {
         ConnectionFactory cf = new ConnectionFactory();
         Connection connection = cf.createConnection();

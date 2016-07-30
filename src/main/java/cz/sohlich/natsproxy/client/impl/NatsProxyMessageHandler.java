@@ -1,14 +1,14 @@
 package cz.sohlich.natsproxy.client.impl;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import cz.sohlich.natsproxy.NatsUtils;
 import cz.sohlich.natsproxy.client.Client;
-import cz.sohlich.natsproxy.client.exception.ClientException;
-import cz.sohlich.natsproxy.core.Context;
-import cz.sohlich.natsproxy.core.NatsHandler;
-import cz.sohlich.natsproxy.core.impl.ContextImpl;
-import cz.sohlich.natsproxy.core.impl.Request;
-import cz.sohlich.natsproxy.core.impl.Response;
-import cz.sohlich.natsproxy.util.ContextUtils;
+import cz.sohlich.natsproxy.common.Context;
+import cz.sohlich.natsproxy.common.NatsHandler;
+import cz.sohlich.natsproxy.common.impl.ContextImpl;
+import cz.sohlich.natsproxy.common.impl.Request;
+import cz.sohlich.natsproxy.common.impl.Response;
+import cz.sohlich.natsproxy.exception.ClientException;
 import io.nats.client.Message;
 import io.nats.client.MessageHandler;
 
@@ -33,7 +33,7 @@ public class NatsProxyMessageHandler implements MessageHandler {
         this.url = url;
         this.client = client;
         this.filters = filters;
-        this.pathParamMap = ContextUtils.buildParamsMap(url);
+        this.pathParamMap = NatsUtils.buildParamsMap(url);
     }
 
     public void onMessage(Message message) {

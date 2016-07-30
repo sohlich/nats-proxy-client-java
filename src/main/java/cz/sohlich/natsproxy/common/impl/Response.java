@@ -1,4 +1,4 @@
-package cz.sohlich.natsproxy.core.impl;
+package cz.sohlich.natsproxy.common.impl;
 
 import com.google.protobuf.ByteString;
 import cz.sohlich.natsproxy.proto.Protobuf;

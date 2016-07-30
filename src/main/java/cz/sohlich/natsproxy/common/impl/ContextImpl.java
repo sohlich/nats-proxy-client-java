@@ -1,10 +1,10 @@
-package cz.sohlich.natsproxy.core.impl;
+package cz.sohlich.natsproxy.common.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.sohlich.natsproxy.client.exception.ClientException;
-import cz.sohlich.natsproxy.core.HttpStatus;
-import cz.sohlich.natsproxy.util.ContextUtils;
+import cz.sohlich.natsproxy.HttpUtils;
+import cz.sohlich.natsproxy.common.HttpStatus;
+import cz.sohlich.natsproxy.exception.ClientException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -18,7 +18,7 @@ import java.util.Map;
  * <p>
  * Created by Radomir Sohlich on 3/16/16.
  */
-public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
+public class ContextImpl implements cz.sohlich.natsproxy.common.Context {
 
     private Request request;
     private Response response;
@@ -105,15 +105,15 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
 
     @Override
     public void parseForm() {
-        String header = ContextUtils.parseMimeType(request.getHeader());
+        String header = HttpUtils.parseMimeType(request.getHeader());
         try {
             String method = request.getMethod();
             String query = new URL(request.getURL()).getQuery();
-            Map<String, String> queryValues = ContextUtils.splitQuery(query);
+            Map<String, String> queryValues = HttpUtils.splitQuery(query);
 
-            Map<String, String> formValues = null;
+            Map<String, String> formValues;
             if ("POST".equals(method) || "PUT".equals(method) || "PATCH".equals(method)) {
-                formValues = ContextUtils.parseForm(request, header);
+                formValues = HttpUtils.parseForm(request, header);
                 // If form contains same param as query,
                 // the form value will be used.
                 queryValues.putAll(formValues);
@@ -126,8 +126,7 @@ public class ContextImpl implements cz.sohlich.natsproxy.core.Context {
 
 
     private byte[] objectToBody(Object o) throws JsonProcessingException {
-        byte[] body = new ObjectMapper().writeValueAsBytes(o);
-        return body;
+        return new ObjectMapper().writeValueAsBytes(o);
     }
 
 

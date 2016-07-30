@@ -1,6 +1,6 @@
 package cz.sohlich.natsproxy.client;
 
-import cz.sohlich.natsproxy.core.NatsHandler;
+import cz.sohlich.natsproxy.common.NatsHandler;
 import io.nats.client.Connection;
 
 /**
@@ -9,17 +9,53 @@ import io.nats.client.Connection;
 public interface Client {
 
 
-    public void get(String natsUrl, NatsHandler handler);
+    /**
+     * Sibscribes to GET method for given url
+     *
+     * @param natsUrl
+     * @param handler
+     */
+    void get(String natsUrl, NatsHandler handler);
 
-    public void post(String natsUrl, NatsHandler handler);
+    /**
+     * Sibscribes to POST method for given url
+     *
+     * @param natsUrl
+     * @param handler
+     */
+    void post(String natsUrl, NatsHandler handler);
 
-    public void put(String natsUrl, NatsHandler handler);
 
-    public void delete(String natsUrl, NatsHandler handler);
+    /**
+     * Sibscribes to PUT method for given url
+     *
+     * @param natsUrl
+     * @param handler
+     */
+    void put(String natsUrl, NatsHandler handler);
 
-    public void subscribe(String method, String natsUrl, NatsHandler handler);
+    /**
+     * Sibscribes to DELETE method for given url
+     *
+     * @param natsUrl
+     * @param handler
+     */
+    void delete(String natsUrl, NatsHandler handler);
+
+    /**
+     * Sibscribes to given method for given url
+     *
+     * @param natsUrl
+     * @param handler
+     */
+    void subscribe(String method, String natsUrl, NatsHandler handler);
 
 
-    public Connection getConnection();
+    /**
+     * Obtains underlying nats connection.
+     *
+     * @return
+     */
+    Connection getConnection();
 
 }
