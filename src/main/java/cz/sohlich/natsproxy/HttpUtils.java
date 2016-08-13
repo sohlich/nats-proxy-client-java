@@ -64,6 +64,9 @@ public class HttpUtils {
      */
     public static Map<String, String> splitQuery(String data) {
         Map<String, String> query_pairs = new LinkedHashMap<>();
+        if (data == null) {
+            return query_pairs;
+        }
         String[] pairs = data.split("&");
         for (String pair : pairs) {
             String[] keyVal = pair.split("=");
