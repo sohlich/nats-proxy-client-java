@@ -30,7 +30,10 @@ public class ContextImplTest {
         Request request = new Request(r);
 
         Map<String, Integer> paramMap = NatsUtils.buildParamsMap("/test/:id1/:id2");
-        Context context = new ContextImpl(paramMap, new Response(), request);
+
+        Response resp = new Response();
+
+        Context context = new ContextImpl(paramMap, resp, request);
         context.parseForm();
 
         String formVariable = context.formVariable("post");
@@ -39,6 +42,10 @@ public class ContextImplTest {
         String pathVariable = context.pathVariable("id1");
         Assert.assertEquals("12324", pathVariable);
 
+
+        //Test get/set
+        Assert.assertEquals(resp, context.getResponse());
+        Assert.assertEquals(request, context.getRequest());
     }
 
 

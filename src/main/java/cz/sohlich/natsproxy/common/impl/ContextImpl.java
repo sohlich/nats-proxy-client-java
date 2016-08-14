@@ -3,7 +3,7 @@ package cz.sohlich.natsproxy.common.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.sohlich.natsproxy.HttpUtils;
-import cz.sohlich.natsproxy.common.HttpStatus;
+import cz.sohlich.natsproxy.common.HTTPStatus;
 import cz.sohlich.natsproxy.exception.ClientException;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class ContextImpl implements cz.sohlich.natsproxy.common.Context {
     @Override
     public void abortWithJson(Object object) throws JsonProcessingException {
         abort();
-        JSON(HttpStatus.SERVER_ERROR, object);
+        JSON(HTTPStatus.SERVER_ERROR, object);
     }
 
     @Override

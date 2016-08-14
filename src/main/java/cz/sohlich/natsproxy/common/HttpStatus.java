@@ -6,7 +6,7 @@ package cz.sohlich.natsproxy.common;
  *
  * Created by Radomir Sohlich on 3/17/16.
  */
-public interface HttpStatus {
+public interface HTTPStatus {
     public static final int SERVER_ERROR = 500;
     public static final int OK = 200;
 }

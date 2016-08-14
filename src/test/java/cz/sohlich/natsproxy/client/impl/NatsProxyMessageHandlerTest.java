@@ -8,6 +8,7 @@ import cz.sohlich.natsproxy.exception.ClientException;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -53,6 +54,22 @@ public class NatsProxyMessageHandlerTest {
         Mockito.when(m.getData()).thenReturn("".getBytes());
         handler.onMessage(m);
         Mockito.verifyZeroInteractions(mainHandler);
+    }
+
+
+    @Test
+    public void testHandleFilterAndNotAbortedContext() {
+        NatsHandler mainHandler = Mockito.mock(NatsHandler.class);
+        List<NatsHandler> filters = new ArrayList<>();
+        Client client = Mockito.mock(Client.class);
+        Mockito.when(client.getConnection()).thenReturn(Mockito.mock
+                (Connection.class));
+        NatsProxyMessageHandler handler = new NatsProxyMessageHandler(client,
+                filters, mainHandler, "");
+        Message m = Mockito.mock(Message.class);
+        Mockito.when(m.getData()).thenReturn("".getBytes());
+        handler.onMessage(m);
+        Mockito.verify(mainHandler).Handle(Matchers.any(Context.class));
     }
 
 
