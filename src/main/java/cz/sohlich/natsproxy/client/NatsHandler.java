@@ -1,4 +1,6 @@
-package cz.sohlich.natsproxy.common;
+package cz.sohlich.natsproxy.client;
+
+import cz.sohlich.natsproxy.common.Context;
 
 /**
  * Handler interface.
