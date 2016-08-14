@@ -3,7 +3,7 @@ package cz.sohlich.natsproxy.client.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.protobuf.ByteString;
 import cz.sohlich.natsproxy.client.Client;
-import cz.sohlich.natsproxy.common.HTTPStatus;
+import cz.sohlich.natsproxy.common.HttpStatus;
 import cz.sohlich.natsproxy.proto.Protobuf;
 import io.nats.client.Connection;
 import io.nats.client.ConnectionFactory;
@@ -44,7 +44,7 @@ public class ClientImplTest {
                     System.out.println("Message: " + new String(data,
                             StandardCharsets.UTF_8) + " received.");
                     try {
-                        c.JSON(HTTPStatus.OK, "OK");
+                        c.JSON(HttpStatus.OK, "OK");
                     } catch (JsonProcessingException e) {
                         Assert.fail();
                     }
@@ -85,7 +85,7 @@ public class ClientImplTest {
                     c.parseForm();
                     Assert.assertEquals("10", c.formVariable("id"));
                     try {
-                        c.JSON(HTTPStatus.OK, "OK");
+                        c.JSON(HttpStatus.OK, "OK");
                     } catch (JsonProcessingException e) {
                         Assert.fail();
                     }
@@ -129,7 +129,7 @@ public class ClientImplTest {
                     System.out.println("Form value: " + c.formVariable
                             ("post") + " received.");
                     try {
-                        c.JSON(HTTPStatus.OK, "OK");
+                        c.JSON(HttpStatus.OK, "OK");
                     } catch (JsonProcessingException e) {
                         Assert.fail();
                     }
@@ -172,7 +172,7 @@ public class ClientImplTest {
                     System.out.println("Form value: " + c.formVariable
                             ("post") + " received.");
                     try {
-                        c.JSON(HTTPStatus.OK, "OK");
+                        c.JSON(HttpStatus.OK, "OK");
                     } catch (JsonProcessingException e) {
                         Assert.fail();
                     }
@@ -218,8 +218,6 @@ public class ClientImplTest {
 
 
     }
-
-
 
 
 }
