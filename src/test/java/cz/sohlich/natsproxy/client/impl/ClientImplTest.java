@@ -56,6 +56,47 @@ public class ClientImplTest {
 
 
     @org.junit.Test
+    public void testDelete() throws Exception {
+        TestObject to = new TestObject() {
+            @Override
+            String getMethod() {
+                return "DELETE";
+            }
+
+            @Override
+            protected Protobuf.Request createRequest() {
+                try {
+                    byte[] requestData = IOUtils.toByteArray(ClassLoader.getSystemResourceAsStream("test_request.dat"));
+                    Protobuf.Request r = Protobuf.Request.parseFrom(requestData);
+                    return Protobuf.Request.newBuilder(r).setURL
+                            ("http://test?id=10")
+                            .build();
+
+                } catch (Exception e) {
+                    Assert.fail();
+                }
+                return null;
+            }
+
+            @Override
+            void createSubscribtion(Client client) {
+                client.delete("/test", c -> {
+                    byte[] data = c.getRequest().getData();
+                    c.parseForm();
+                    Assert.assertEquals("10", c.formVariable("id"));
+                    try {
+                        c.JSON(HttpStatus.OK, "OK");
+                    } catch (JsonProcessingException e) {
+                        Assert.fail();
+                    }
+                });
+            }
+        };
+        to.doTest();
+    }
+
+
+    @org.junit.Test
     public void testPost() throws Exception {
         TestObject to = new TestObject() {
             @Override
@@ -80,6 +121,49 @@ public class ClientImplTest {
             @Override
             void createSubscribtion(Client client) {
                 client.post("/test", c -> {
+                    byte[] data = c.getRequest().getData();
+                    Assert.assertTrue(data != null);
+                    Assert.assertTrue(data.length > 0);
+                    c.parseForm();
+                    Assert.assertEquals("postval", c.formVariable("post"));
+                    System.out.println("Form value: " + c.formVariable
+                            ("post") + " received.");
+                    try {
+                        c.JSON(HttpStatus.OK, "OK");
+                    } catch (JsonProcessingException e) {
+                        Assert.fail();
+                    }
+                });
+            }
+        };
+        to.doTest();
+    }
+
+    @org.junit.Test
+    public void testPut() throws Exception {
+        TestObject to = new TestObject() {
+            @Override
+            String getMethod() {
+                return "PUT";
+            }
+
+            @Override
+            protected Protobuf.Request createRequest() {
+                try {
+                    byte[] requestData = IOUtils.toByteArray(ClassLoader.getSystemResourceAsStream("test_request.dat"));
+                    Protobuf.Request r = Protobuf.Request.parseFrom(requestData);
+                    return Protobuf.Request.newBuilder(r).setURL("http://test")
+                            .build();
+
+                } catch (Exception e) {
+                    Assert.fail();
+                }
+                return null;
+            }
+
+            @Override
+            void createSubscribtion(Client client) {
+                client.put("/test", c -> {
                     byte[] data = c.getRequest().getData();
                     Assert.assertTrue(data != null);
                     Assert.assertTrue(data.length > 0);

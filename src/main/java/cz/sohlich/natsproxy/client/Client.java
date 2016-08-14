@@ -1,6 +1,5 @@
 package cz.sohlich.natsproxy.client;
 
-import cz.sohlich.natsproxy.common.NatsHandler;
 import io.nats.client.Connection;
 
 /**

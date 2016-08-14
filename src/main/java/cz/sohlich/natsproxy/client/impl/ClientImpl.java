@@ -2,13 +2,11 @@ package cz.sohlich.natsproxy.client.impl;
 
 import cz.sohlich.natsproxy.NatsUtils;
 import cz.sohlich.natsproxy.client.Client;
-import cz.sohlich.natsproxy.common.NatsHandler;
+import cz.sohlich.natsproxy.client.NatsHandler;
 import io.nats.client.Connection;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Radomir Sohlich on 3/16/16.
@@ -24,8 +22,7 @@ public class ClientImpl implements Client {
     private final List<NatsHandler> filters;
     private final Connection connection;
 
-    public ClientImpl(Connection connection)
-            throws IOException, TimeoutException {
+    public ClientImpl(Connection connection) {
         this.connection = connection;
         filters = new ArrayList<>();
     }

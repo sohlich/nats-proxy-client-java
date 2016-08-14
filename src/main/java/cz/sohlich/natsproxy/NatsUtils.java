@@ -23,6 +23,9 @@ public class NatsUtils {
 
     public static Map<String, Integer> buildParamsMap(String URL) {
         Map<String, Integer> paramMap = new HashMap<>();
+        if (URL == null) {
+            throw new IllegalArgumentException("Url cannot be null");
+        }
         String[] params = URL.split("/");
         int index = 0;
         for (String param : params) {

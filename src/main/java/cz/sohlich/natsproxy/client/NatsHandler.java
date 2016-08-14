@@ -4,7 +4,7 @@ import cz.sohlich.natsproxy.common.Context;
 
 /**
  * Handler interface.
- *
+ * <p>
  * Created by Radomir Sohlich on 3/16/16.
  */
 public interface NatsHandler {
